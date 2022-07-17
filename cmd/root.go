@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"net/url"
 	"os"
@@ -12,30 +13,33 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "url-json <url>",
-	Short: "url-json print decomposed parameters of a url in json format",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		var rawURL string
-		if len(args) == 0 || args[0] == "-" {
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
-			rawURL = strings.Trim(scanner.Text(), "\n ")
-		} else {
-			rawURL = args[0]
-		}
+var (
+	inputReader  io.Reader
+	resultWriter io.Writer
+)
 
-		err := printUrlComponents(rawURL)
-		if err != nil {
-			return err
-		}
-		return nil
-	},
+var rootCmd = newRootCmd(os.Stdin, os.Stdout)
+
+// take reader and writer as arguments for testing
+func newRootCmd(reader io.Reader, writer io.Writer) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "url-json <url>",
+		Short: "url-json print decomposed parameters of a url in json format",
+		RunE:  runRootCmd,
+	}
+
+	cmd.SetIn(reader)
+	inputReader = reader
+
+	cmd.SetOut(writer)
+	resultWriter = writer
+
+	return cmd
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(resultWriter, err)
 		os.Exit(1)
 	}
 }
@@ -55,6 +59,23 @@ type userInfo struct {
 	Password string `json:"password"`
 }
 
+func runRootCmd(cmd *cobra.Command, args []string) error {
+	var rawURL string
+	if len(args) == 0 || args[0] == "-" {
+		scanner := bufio.NewScanner(inputReader)
+		scanner.Scan()
+		rawURL = strings.Trim(scanner.Text(), "\n ")
+	} else {
+		rawURL = args[0]
+	}
+
+	err := printUrlComponents(rawURL)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func printUrlComponents(rawInputURL string) error {
 	inputURL, err := parseURL(rawInputURL)
 	if err != nil {
@@ -67,7 +88,7 @@ func printUrlComponents(rawInputURL string) error {
 		return fmt.Errorf("failed to marshal json: %w", err)
 	}
 
-	fmt.Println(string(jsonBytes))
+	fmt.Fprintln(resultWriter, string(jsonBytes))
 
 	return nil
 }
