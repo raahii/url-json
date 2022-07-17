@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -14,9 +15,17 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "url-json <url>",
 	Short: "url-json print decomposed parameters of a url in json format",
-	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := printUrlComponents(args[0])
+		var rawURL string
+		if len(args) == 0 || args[0] == "-" {
+			scanner := bufio.NewScanner(os.Stdin)
+			scanner.Scan()
+			rawURL = strings.Trim(scanner.Text(), "\n ")
+		} else {
+			rawURL = args[0]
+		}
+
+		err := printUrlComponents(rawURL)
 		if err != nil {
 			return err
 		}
