@@ -6,6 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// These variables are set in build step
+var (
+	Version  = "unset"
+	Revision = "unset"
+)
+
 func init() {
 	rootCmd.AddCommand(versionCmd)
 }
@@ -13,8 +19,7 @@ func init() {
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of url-json",
-	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v0.1.0")
+		fmt.Fprintf(resultWriter, "%s (rev: %s)\n", Version, Revision)
 	},
 }

@@ -20,6 +20,13 @@ var (
 
 var rootCmd = newRootCmd(os.Stdin, os.Stdout)
 
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(resultWriter, err)
+		os.Exit(1)
+	}
+}
+
 // take reader and writer as arguments for testing
 func newRootCmd(reader io.Reader, writer io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
@@ -35,13 +42,6 @@ func newRootCmd(reader io.Reader, writer io.Writer) *cobra.Command {
 	resultWriter = writer
 
 	return cmd
-}
-
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(resultWriter, err)
-		os.Exit(1)
-	}
 }
 
 type urlComponents struct {
