@@ -32,6 +32,7 @@ func newRootCmd(reader io.Reader, writer io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "url-json <url>",
 		Short: "url-json print decomposed parameters of a url in json format",
+		Args:  cobra.MaximumNArgs(1),
 		RunE:  runRootCmd,
 	}
 
