@@ -8,8 +8,8 @@ import (
 
 // These variables are set in build step
 var (
-	Version  = "unset"
-	Revision = "unset"
+	version  = "unset"
+	revision = "HEAD"
 )
 
 func init() {
@@ -20,6 +20,6 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of url-json",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Fprintf(resultWriter, "%s (rev: %s)\n", Version, Revision)
+		fmt.Fprintf(resultWriter, "%s (rev: %s)\n", version, revision)
 	},
 }

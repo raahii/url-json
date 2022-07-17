@@ -12,8 +12,8 @@ builds:
     binary: url-json
     ldflags:
       - -s -w
-      - -X github.com/raahii/url-json/cmd.Version={{.Version}}
-      - -X github.com/raahii/url-json/cmd.Revision={{.ShortCommit}}
+      - -X github.com/raahii/url-json/cmd.version={{.Version}}
+      - -X github.com/raahii/url-json/cmd.revision={{.ShortCommit}}
     env:
       - CGO_ENABLED=0
 
