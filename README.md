@@ -4,14 +4,11 @@
 
 ## Installation
 
-Download the binary from [GitHub Releases](https://github.com/raahii/url-json/releases) and drop it in your `$PATH`.
-
-Or by `go install`, but it's not recommended because it will be `HEAD` version.
-
 ```shell
-$ go install github.com/raahii/url-json@latest
+go install github.com/raahii/url-json@v1.0.1
 ```
 
+Or download the binary from [GitHub Releases](https://github.com/raahii/url-json/releases) and drop it in your `$PATH`.
 
 
 ## Usage
